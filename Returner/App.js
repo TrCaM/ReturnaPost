@@ -1,50 +1,72 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- * @flow
- * @lint-ignore-every XPLATJSCOPYRIGHT1
- */
-
 import React, {Component} from 'react';
 import {Platform, StyleSheet, Text, View} from 'react-native';
+import { createStackNavigator, createAppContainer, createBottomTabNavigator } from 'react-navigation';
+import Icon from 'react-native-vector-icons/dist/FontAwesome';
+import Home from './src/home/home';
+import Shipments from './src/shipments/shipments';
+import Returns from './src/returns/returns';
 
-const instructions = Platform.select({
-  ios: 'Press Cmd+R to reload,\n' + 'Cmd+D or shake for dev menu',
-  android:
-    'Double tap R on your keyboard to reload,\n' +
-    'Shake or press menu button for dev menu',
+const HomeStack = createStackNavigator({
+	Home: Home
+},
+{
+    headerMode: 'none',
+    navigationOptions: {
+        headerVisible: false,
+    }
 });
 
-type Props = {};
-export default class App extends Component<Props> {
+const ShipmentsStack = createStackNavigator({
+	Shipments: Shipments
+},
+{
+    headerMode: 'none',
+    navigationOptions: {
+        headerVisible: false,
+    }
+});
+
+const ReturnsStack = createStackNavigator({
+	Returns: Returns
+},
+{
+    headerMode: 'none',
+    navigationOptions: {
+        headerVisible: false,
+    }
+});
+
+const MainNavigator = createBottomTabNavigator({
+  Home: HomeStack,
+	Shipments: ShipmentsStack,
+	Returns: ReturnsStack
+},
+{
+  defaultNavigationOptions: ({ navigation }) => ({
+    tabBarIcon: ({ focused, tintColor }) => {
+      const { routeName } = navigation.state;
+      let iconName;
+        if (routeName === 'Home') {
+          iconName = 'home';
+        } else if (routeName === 'Shipments') {
+					iconName = 'home';
+				} else if (routeName === 'Returns') {
+					iconName = 'home';
+				}
+        return <Icon name={iconName} size={30} color="#900"/>;
+    }
+  }),
+  tabBarPosition: 'bottom',
+  animationEnabled: true,
+  swipeEnabled: true,
+  tabBarOptions: {
+    activeTintColor: 'tomato',
+    inactiveTintColor: 'gray',
+  },
+});
+const AppNavigator = createAppContainer(MainNavigator)
+export default  class App extends Component {
   render() {
-    return (
-      <View style={styles.container}>
-        <Text style={styles.welcome}>Welcome to React Native!</Text>
-        <Text style={styles.instructions}>To get started, edit App.js</Text>
-        <Text style={styles.instructions}>{instructions}</Text>
-      </View>
-    );
+    return <AppNavigator/>
   }
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#F5FCFF',
-  },
-  welcome: {
-    fontSize: 20,
-    textAlign: 'center',
-    margin: 10,
-  },
-  instructions: {
-    textAlign: 'center',
-    color: '#333333',
-    marginBottom: 5,
-  },
-});
